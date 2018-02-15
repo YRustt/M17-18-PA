@@ -133,10 +133,16 @@ bool check(struct BinaryMatrix *A, struct BinaryMatrix *B, struct BinaryMatrix *
         if (left_ar[i] != right_ar[i]) {
 //            printf("%" SCNu32 " ", left_ar[i]);
 //            printf("%" SCNu32 "\n", right_ar[i]);
+            free(temp_ar);
+            free(left_ar);
+            free(right_ar);
             return true;
         }
     }
-
+    
+    free(temp_ar);
+    free(left_ar);
+    free(right_ar);
     return false;
 }
 
@@ -174,19 +180,17 @@ int main() {
     uint32_t *ar = (uint32_t*) malloc(A.line_size * sizeof(uint32_t));
 
     uint32_t i = 0;
-    for (i = 0; i < 42; ++i) {
+    for (i = 0; i < 52; ++i) {
         _random_vector(ar, A.line_size);
-//        for (uint32_t i = 0; i < A.line_size; ++i) {
-//            printf("%" SCNu32 " ", ar[i]);
-//        }
-//        printf("\n");
+        for (uint32_t i = 0; i < A.line_size; ++i) {
+            printf("%" SCNu32 " ", ar[i]);
+        }
+        printf("\n");
         if (check(&A, &B, &C, ar, bits)) break;
     }
 
-//    printf("%s", ((i == 42) ? "YES" : "NO"));
-
     FILE *out = fopen("matrix.out", "w");
-    fprintf(out, ((i == 42) ? "YES\n" : "NO\n"));
+    fprintf(out, ((i == 52) ? "YES\n" : "NO\n"));
     fflush(out);
 
     fclose(out);
