@@ -33,7 +33,14 @@ uint32_t _get_number(uint32_t *a) {
 void _random_vector(uint32_t *ar, uint32_t size) {
     for (uint32_t i = 0; i < size; ++i) {
         ar[i] = 0;
-        while (!ar[i]) ar[i] = (uint32_t) rand();
+        uint32_t x = 0;
+        while (!ar[i]) {
+            x = rand() & 0xff;
+            x |= (rand() & 0xff) << 8;
+            x |= (rand() & 0xff) << 16;
+            x |= (rand() & 0xff) << 24;
+            ar[i] = x;
+        }
     }
 }
 
