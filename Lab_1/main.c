@@ -74,7 +74,7 @@ void delete_BinaryMatrix(struct BinaryMatrix *binaryMatrix) {
 
 
 bool init_BinaryMatrix(struct BinaryMatrix* binaryMatrix, FILE* file) {
-    char* buff = (char*) malloc(binaryMatrix->sls_for_line * sizeof(char));
+    char* buff = (char*) malloc(binaryMatrix->sls_for_line * sizeof(char) + 1);
 
     for (uint32_t i = 0; i < binaryMatrix->size; ++i) {
         fscanf(file, "%s", buff);
@@ -136,21 +136,15 @@ bool check(struct BinaryMatrix *A, struct BinaryMatrix *B, struct BinaryMatrix *
     mul(A, temp_ar, left_ar, bits);
     mul(C, ar, right_ar, bits);
 
-    for (uint32_t i = 0; i < A->line_size; ++i) {
-        if (left_ar[i] != right_ar[i]) {
-//            printf("%" SCNu32 " ", left_ar[i]);
-//            printf("%" SCNu32 "\n", right_ar[i]);
-            free(temp_ar);
-            free(left_ar);
-            free(right_ar);
-            return true;
-        }
+    uint32_t i = 0;
+    for (i = 0; i < A->line_size; ++i) {
+        if (left_ar[i] != right_ar[i]) break;
     }
     
     free(temp_ar);
     free(left_ar);
     free(right_ar);
-    return false;
+    return i != A->line_size;
 }
 
 
@@ -160,10 +154,6 @@ int main() {
 
     FILE *file;
     file = fopen("matrix.in", "r");
-
-    if (!file) {
-        return 1;
-    }
 
     unsigned int n;
     fscanf(file, "%u", &n);
@@ -189,10 +179,10 @@ int main() {
     uint32_t i = 0;
     for (i = 0; i < 52; ++i) {
         _random_vector(ar, A.line_size);
-        for (uint32_t i = 0; i < A.line_size; ++i) {
-            printf("%" SCNu32 " ", ar[i]);
-        }
-        printf("\n");
+//        for (uint32_t i = 0; i < A.line_size; ++i) {
+//            printf("%" SCNu32 " ", ar[i]);
+//        }
+//        printf("\n");
         if (check(&A, &B, &C, ar, bits)) break;
     }
 
