@@ -58,7 +58,7 @@ if __name__ == "__main__":
             p = int(line)
             if p in (0, 1):
                 fout.write("No\n")
-            elif p == 2:
+            elif p in (2, 3):
                 fout.write("Yes\n")
             elif not p & 1:
                 fout.write("No\n")
