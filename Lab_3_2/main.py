@@ -21,34 +21,39 @@ def _calc_v_u(num):
 
 
 def _check(a, v, u, num):
-    # type: (int, int, int, int) -> bool
+    # type: (int, int, int, int) -> int
 
     m = pow(a, v, num)
 
     if m == 1:
-        return True
+        return 2
 
     for _ in range(u):
-        if m == 1:
-            return True
+        if m == num - 1:
+            return 2
 
         m = (m * m) % num
 
-    return m == 1
+    return 1 if m == 1 else 0
 
 
 def karmaikle(num):
     # type: (int) -> bool
 
-    it_c = 30
+    it_c = 25
     v, u = _calc_v_u(num)
     flag = False
 
     for _ in range(it_c):
-        a = random.randrange(2, num - 1)
+        a = random.randrange(2, num)
         if math.gcd(a, num) == 1:
-            if not _check(a, v, u, num):
+            res = _check(a, v, u, num)
+
+            if res == 0:
                 return False
+
+            if res == 1:
+                flag = True
         else:
             flag = True
 
