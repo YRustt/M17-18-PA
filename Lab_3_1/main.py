@@ -40,11 +40,14 @@ def _check(a, v, u, num):
 def miller_rabin(num):
     # type: (int) -> bool
 
-    it_c = 30
+    it_c = 25
     v, u = _calc_v_u(num)
 
     for _ in range(it_c):
-        a = random.randrange(2, num - 1)
+        a = random.randrange(2, num)
+        if math.gcd(a, num) != 1:
+            return False
+
         if not _check(a, v, u, num):
             return False
 
