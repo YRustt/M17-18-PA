@@ -219,7 +219,7 @@ int main() {
             _random_vector(ar, A.line_size);
             idx = check(&A, &B, &C, ar, bits);
             if (idx != -1) {
-                fprintf(out, "Yes\n%d %d\n", idx / 100000, idx % 100000);
+                fprintf(out, "Yes\n%d %d\n", (idx / 100000), (idx % 100000));
                 break;
             }
         }
