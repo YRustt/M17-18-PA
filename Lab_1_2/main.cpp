@@ -69,7 +69,7 @@ void create_matrix(uint32_t size_) {
 
 void init_matrix(uint32_t *m, FILE* file) {
     for (uint32_t i = 0; i < size; ++i) {
-        fscanf(file, "%s", buff);
+        fread(buff, sls_for_line + 1, 1, file);
 
         uint32_t a[sls_for_T];
 
@@ -166,6 +166,8 @@ int main() {
 
     FILE *file = fopen("element.in", "r");
     FILE *out = fopen("element.out", "w");
+    char YES[] = "Yes\n";
+    char NO[] = "No\n";
 
     unsigned int n;
     uint32_t bits[32];
@@ -179,6 +181,8 @@ int main() {
         if (n == 0) {
             break;
         }
+
+        getc(file);
 
         create_matrix(n);
 
@@ -198,7 +202,7 @@ int main() {
             }
         }
         if (idx == -1) {
-            fprintf(out, "No\n");
+            fwrite(NO, sizeof(char), sizeof(NO) - 1, out);
         }
     }
 
