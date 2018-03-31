@@ -6,7 +6,7 @@ if __name__ == '__main__':
 
     with open("element.in", "w") as fout:
 
-        for _ in range(10000):
+        for i in range(10000):
             fout.write("%s\n" % n)
             for i in range(3):
                 for j in range(n):

@@ -213,7 +213,7 @@ int main() {
 
         uint32_t *ar = (uint32_t *) malloc(A.line_size * sizeof(uint32_t));
 
-        uint32_t i = 0;
+        uint32_t i = 0; 
         int32_t idx = -1;
         for (i = 0; i < 52; ++i) {
             _random_vector(ar, A.line_size);
