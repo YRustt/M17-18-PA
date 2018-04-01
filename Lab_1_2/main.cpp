@@ -6,9 +6,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdint>
+#include <random>
+#include <limits>
 
-#define MAX_VECTOR_SIZE 125
+#define MAX_VECTOR_SIZE 125 * 4
 #define MAX_MATRIX_SIZE MAX_VECTOR_SIZE * 4000
+
 
 uint32_t memory[3 * MAX_MATRIX_SIZE + 4 * MAX_VECTOR_SIZE];
 uint32_t *a = memory;
@@ -191,11 +194,11 @@ int main() {
 
         uint32_t i = 0;
         int32_t idx = -1;
-        for (i = 0; i < 20; ++i) {
+        for (i = 0; i < 22; ++i) {
             _random_vector(v, line_size);
             idx = check(a, b, c, v, bits);
             if (idx != -1) {
-                uint32_t jdx = check2(a, b, c, bits, idx);
+                int32_t jdx = check2(a, b, c, bits, idx);
                 fprintf(out, "Yes\n%d %d\n", idx, jdx);
                 break;
             }
