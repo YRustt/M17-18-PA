@@ -6,9 +6,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstdint>
+#include <random>
+#include <limits>
 
-#define MAX_VECTOR_SIZE 125
+#define MAX_VECTOR_SIZE 125 * 4
 #define MAX_MATRIX_SIZE MAX_VECTOR_SIZE * 4000
+
 
 uint32_t memory[3 * MAX_MATRIX_SIZE + 4 * MAX_VECTOR_SIZE];
 uint32_t *a = memory;
@@ -85,7 +88,7 @@ void init_matrix(uint32_t *m, FILE* file) {
 
 void mul(uint32_t *m, uint32_t *v, uint32_t *res, uint32_t const *bits) {
     for (uint32_t i = 0; i < size; i += 32) {
-        res[i / 32] = 0;
+        res[i >> 5] = 0;
         uint32_t tmp = 0;
         for (uint32_t j = 0; j < 32; ++j) {
             if ((i + j) >= size) break;
@@ -106,7 +109,7 @@ void mul(uint32_t *m, uint32_t *v, uint32_t *res, uint32_t const *bits) {
                 tmp |= bits[31 - j];
             }
         }
-        res[i / 32] = tmp;
+        res[i >> 5] = tmp;
     }
 }
 
@@ -124,13 +127,14 @@ int32_t check(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t *v, uint32_t const
         return -1;
     } else {
         for (uint32_t j = 0; j < 32; ++j) {
-            if ((v2[i] & bits[j]) != (v3[i] & bits[j])) {
-                int32_t i_ = i * 32 + 32 - j;
-                return i_;
+            int32_t i_ = i * 32 + 31 - j;
+            if ((i_ < size) && ((v2[i] & bits[j]) != (v3[i] & bits[j]))) {
+                return i_ + 1;
             }
 
         }
     }
+    return -1;
 }
 
 int32_t check2(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t const *bits, int32_t idx) {
@@ -139,31 +143,29 @@ int32_t check2(uint32_t *a, uint32_t *b, uint32_t *c, uint32_t const *bits, int3
     for (uint32_t i = 0; i < line_size; ++i) {
         v1[i] = 0;
     }
-    for (uint32_t i = 0; i < line_size; ++i) {
-        for (uint32_t j = 0; j < 32; ++j) {
-            if (line_a[i] & bits[j]) {
-                uint32_t s = i * 32 + 31 - j;
-                for (uint32_t k = 0; k < line_size; ++k) {
-                    v1[k] ^= b[s * line_size + k];
-                }
+    for (uint32_t i = 0; i < size; ++i) {
+        uint32_t i_ = i >> 5;
+        uint32_t j_ = 31 - (i % 32);
+
+        if (line_a[i_] & bits[j_]) {
+            for (uint32_t k = 0; k < line_size; ++k) {
+                v1[k] ^= b[i * line_size + k];
             }
         }
     }
-    for (uint32_t i = 0; i < line_size; ++i) {
-        if (line_c[i] != v1[i]) {
-            for (uint32_t j = 0; j < 32; ++j) {
-                if ((line_c[i] & bits[j]) != (v1[i] & bits[j])) {
-                    return i * 32 + 32 - j;
-                }
-            }
+    for (uint32_t i = 0; i < size; ++i) {
+        uint32_t i_ = i >> 5;
+        uint32_t j_ = 31 - (i % 32);
+        if ((line_c[i_] & bits[j_]) != (v1[i_] & bits[j_])) {
+            return i_ * 32 + 32 - j_;
         }
     }
+    return -1;
 }
 
 
 int main() {
     srand(time(NULL));
-
     FILE *file = fopen("element.in", "r");
     FILE *out = fopen("element.out", "w");
     char YES[] = "Yes\n";
@@ -192,11 +194,11 @@ int main() {
 
         uint32_t i = 0;
         int32_t idx = -1;
-        for (i = 0; i < 20; ++i) {
+        for (i = 0; i < 22; ++i) {
             _random_vector(v, line_size);
             idx = check(a, b, c, v, bits);
             if (idx != -1) {
-                uint32_t jdx = check2(a, b, c, bits, idx);
+                int32_t jdx = check2(a, b, c, bits, idx);
                 fprintf(out, "Yes\n%d %d\n", idx, jdx);
                 break;
             }
