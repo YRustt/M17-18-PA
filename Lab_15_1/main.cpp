@@ -1,7 +1,6 @@
 #include <fstream>
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <random>
 #include <utility>
 #include <climits>
 #include <cmath>
@@ -17,9 +16,12 @@ std::vector<std::vector<int>> graph;
 std::vector<std::vector<int>> graph_reverse;
 std::vector<std::vector<int>> graph_condensation;
 std::vector<int> order, components, count_v;
-std::vector<long long> rands;
-std::vector<double> sums;
+std::vector<double> rands, sums;
 std::vector<bool> used;
+
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_real_distribution<> dis(0.0, 1.0);
 
 long long MAX_N = INT_MAX;
 
@@ -45,7 +47,6 @@ void step2(int v, int idx) {
 
 
 int main() {
-    srand(time(0));
     std::ifstream fin("reachability.in");
 
     int n, m, v, u;
@@ -118,24 +119,26 @@ int main() {
     }
 #endif
 
-    rands = std::vector<long long> (idx, 0);
+    rands = std::vector<double> (idx, 0);
     sums = std::vector<double> (idx, 0.0);
-    long long r, min_;
+    double r, min_;
     for (size_t iter = 1; iter < COUNT_ITER; ++iter) {
-        for (int i = idx - 1; i >= 0; --i) {
-            r = MAX_N;
+        for (int i = 0; i < idx; ++i) {
+            r = 1.0;
             for (int j = 0; j < count_v[i]; ++j) {
-                r = std::min(r, rand() % MAX_N);
+                r = std::min(r, dis(gen));
             }
             rands[i] = r;
+        }
 
+        for (int i = idx - 1; i >= 0; --i) {
             min_ = rands[i];
             for (int j = 0; j < graph_condensation[i].size(); ++j) {
                 min_ = std::min(min_, rands[graph_condensation[i][j]]);
             }
             rands[i] = min_;
 
-            sums[i] += std::log(1. - double(rands[i]) / MAX_N);
+            sums[i] += std::log(1. - rands[i]);
         }
     }
 
@@ -143,7 +146,7 @@ int main() {
 #ifdef DEBUG
         std::cout << i << " " << -COUNT_ITER / sums[i] << std::endl;
 #endif
-        count_v[i] = std::max(std::min((int) (-(COUNT_ITER / sums[i]) + 1), (double) n), 1.0);
+        count_v[i] = std::max(std::min((int) (-(COUNT_ITER / sums[i]) + 1), n), 1);
     }
 
 #ifdef DEBUG
