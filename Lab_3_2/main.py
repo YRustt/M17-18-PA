@@ -65,7 +65,7 @@ if __name__ == "__main__":
         t = fin.readline().strip()
         for line in fin:
             p = int(line)
-            if p in (1, 3):
+            if p < 561:
                 fout.write("No\n")
             elif not p & 1:
                 fout.write("No\n")
