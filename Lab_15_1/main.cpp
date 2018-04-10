@@ -123,15 +123,13 @@ int main() {
     sums = std::vector<double> (idx, 0.0);
     double r, min_;
     for (size_t iter = 1; iter < COUNT_ITER; ++iter) {
-        for (int i = 0; i < idx; ++i) {
+        for (int i = idx - 1; i >= 0; --i) {
             r = 1.0;
             for (int j = 0; j < count_v[i]; ++j) {
                 r = std::min(r, dis(gen));
             }
             rands[i] = r;
-        }
 
-        for (int i = idx - 1; i >= 0; --i) {
             min_ = rands[i];
             for (int j = 0; j < graph_condensation[i].size(); ++j) {
                 min_ = std::min(min_, rands[graph_condensation[i][j]]);
