@@ -44,7 +44,7 @@ def karmaikle(num):
     v, u = _calc_v_u(num)
     flag = False
 
-    for _ in range(it_c):
+    while it_c >= 0:
         a = random.randrange(2, num)
         if math.gcd(a, num) == 1:
             res = _check(a, v, u, num)
@@ -54,6 +54,8 @@ def karmaikle(num):
 
             if res == 1:
                 flag = True
+
+            it_c -= 1
         else:
             flag = True
 
